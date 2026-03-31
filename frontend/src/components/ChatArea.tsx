@@ -1,10 +1,27 @@
+import { useEffect, useRef } from 'react'
+import { Message } from '../types'
 import { useChat } from '../hooks/useChat'
 import ChatMessages from './ChatMessages'
 import PromptInput from './PromptInput'
 import WelcomeScreen from './WelcomeScreen'
 
-export default function ChatArea() {
-  const { messages, isLoading, error, send, clearError } = useChat()
+interface ChatAreaProps {
+  initialMessages?: Message[]
+  onMessagesChange?: (messages: Message[]) => void
+}
+
+export default function ChatArea({ initialMessages = [], onMessagesChange }: ChatAreaProps) {
+  const { messages, isLoading, error, send, clearError } = useChat(initialMessages)
+  const onMessagesChangeRef = useRef(onMessagesChange)
+  onMessagesChangeRef.current = onMessagesChange
+
+  const prevLengthRef = useRef(messages.length)
+  useEffect(() => {
+    if (messages.length !== prevLengthRef.current) {
+      prevLengthRef.current = messages.length
+      onMessagesChangeRef.current?.(messages)
+    }
+  }, [messages])
 
   return (
     <div className="flex-1 flex flex-col bg-dark-950 min-h-0 overflow-hidden">

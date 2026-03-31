@@ -2,11 +2,11 @@ import { useState, useCallback, useRef } from 'react'
 import { Message } from '../types'
 import { sendMessage } from '../services/api'
 
-export function useChat() {
-  const [messages, setMessages] = useState<Message[]>([])
+export function useChat(initialMessages: Message[] = []) {
+  const [messages, setMessages] = useState<Message[]>(initialMessages)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const messagesRef = useRef<Message[]>([])
+  const messagesRef = useRef<Message[]>(initialMessages)
 
   const send = useCallback(async (content: string) => {
     const userMessage: Message = {
