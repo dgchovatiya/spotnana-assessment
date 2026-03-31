@@ -38,34 +38,76 @@ One button to wipe the conversation and start fresh.
 
 ## Tech Stack
 
+### Backend
+- **Framework:** Flask (Python)
+- **AI:** OpenAI API (GPT-4)
+- **CORS:** Flask-CORS
+
+### Frontend
 - **Framework:** React + Vite + TypeScript
 - **Styling:** Tailwind CSS
-- **AI:** OpenAI API (GPT-4)
 - **State:** React hooks + localStorage for chat history
+
+## Project Structure
+
+```
+spotnana-assessment/
+├── backend/
+│   ├── app.py              # Flask app entry point
+│   ├── requirements.txt    # Python dependencies
+│   └── .env.example        # Backend env template
+├── frontend/
+│   ├── src/
+│   ├── package.json
+│   ├── vite.config.ts
+│   └── tailwind.config.ts
+└── README.md
+```
 
 ## Getting Started
 
+### Backend
+
 ```bash
-# Clone the repo
-git clone https://github.com/dgchovatiya/spotnana-assessment.git
-cd spotnana-assessment
+cd backend
+
+# Create virtual environment
+python3 -m venv venv
+source venv/bin/activate
 
 # Install dependencies
-npm install
+pip install -r requirements.txt
 
 # Set up environment variables
 cp .env.example .env
 # Add your OpenAI API key to .env
 
+# Start the Flask server
+flask run --port 5000
+```
+
+### Frontend
+
+```bash
+cd frontend
+
+# Install dependencies
+npm install
+
 # Start the dev server
 npm run dev
 ```
 
+The frontend runs on `http://localhost:5173` and proxies API requests to `http://localhost:5000`.
+
 ## Environment Variables
+
+### Backend (`backend/.env`)
 
 | Variable | Description |
 |----------|-------------|
-| `VITE_OPENAI_API_KEY` | Your OpenAI API key |
+| `OPENAI_API_KEY` | Your OpenAI API key |
+| `FLASK_ENV` | `development` or `production` |
 
 ## License
 
