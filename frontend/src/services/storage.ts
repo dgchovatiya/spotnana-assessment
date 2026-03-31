@@ -12,23 +12,35 @@ export function getConversations(): Conversation[] {
 }
 
 export function saveConversation(conversation: Conversation): void {
-  const conversations = getConversations()
-  const index = conversations.findIndex(c => c.id === conversation.id)
+  try {
+    const conversations = getConversations()
+    const index = conversations.findIndex(c => c.id === conversation.id)
 
-  if (index >= 0) {
-    conversations[index] = conversation
-  } else {
-    conversations.unshift(conversation)
+    if (index >= 0) {
+      conversations[index] = conversation
+    } else {
+      conversations.unshift(conversation)
+    }
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(conversations))
+  } catch {
+    // localStorage quota exceeded — silently fail
   }
-
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(conversations))
 }
 
 export function deleteConversation(id: string): void {
-  const conversations = getConversations().filter(c => c.id !== id)
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(conversations))
+  try {
+    const conversations = getConversations().filter(c => c.id !== id)
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(conversations))
+  } catch {
+    // silently fail
+  }
 }
 
 export function clearAllConversations(): void {
-  localStorage.removeItem(STORAGE_KEY)
+  try {
+    localStorage.removeItem(STORAGE_KEY)
+  } catch {
+    // silently fail
+  }
 }

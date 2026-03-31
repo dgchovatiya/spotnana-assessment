@@ -24,6 +24,10 @@ export default function ConfirmDialog({
   useEffect(() => {
     if (isOpen) {
       cancelRef.current?.focus()
+      document.body.style.overflow = 'hidden'
+    }
+    return () => {
+      document.body.style.overflow = ''
     }
   }, [isOpen])
 
@@ -41,14 +45,20 @@ export default function ConfirmDialog({
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="confirm-title"
+      aria-describedby="confirm-message"
+    >
       {/* Backdrop */}
       <div className="absolute inset-0 bg-black/60" onClick={onCancel} />
 
       {/* Dialog */}
       <div className="relative bg-dark-800 border border-dark-600 rounded-2xl shadow-xl max-w-sm w-full p-6">
-        <h3 className="text-lg font-semibold text-dark-100 mb-2">{title}</h3>
-        <p className="text-sm text-dark-400 mb-6">{message}</p>
+        <h3 id="confirm-title" className="text-lg font-semibold text-dark-100 mb-2">{title}</h3>
+        <p id="confirm-message" className="text-sm text-dark-400 mb-6">{message}</p>
 
         <div className="flex gap-3 justify-end">
           <button

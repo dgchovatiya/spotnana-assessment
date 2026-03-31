@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect, KeyboardEvent } from 'react'
 
+const MAX_LENGTH = 2000
+
 interface PromptInputProps {
   onSend: (message: string) => void
   disabled?: boolean
@@ -9,6 +11,7 @@ export default function PromptInput({ onSend, disabled = false }: PromptInputPro
   const [input, setInput] = useState('')
   const [shake, setShake] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const shakeTimerRef = useRef<ReturnType<typeof setTimeout>>()
 
   useEffect(() => {
     if (!disabled) {
@@ -24,12 +27,18 @@ export default function PromptInput({ onSend, disabled = false }: PromptInputPro
     }
   }, [input])
 
+  useEffect(() => {
+    return () => {
+      if (shakeTimerRef.current) clearTimeout(shakeTimerRef.current)
+    }
+  }, [])
+
   const handleSend = () => {
     const trimmed = input.trim()
     if (disabled) return
     if (!trimmed) {
       setShake(true)
-      setTimeout(() => setShake(false), 500)
+      shakeTimerRef.current = setTimeout(() => setShake(false), 500)
       textareaRef.current?.focus()
       return
     }
@@ -44,7 +53,15 @@ export default function PromptInput({ onSend, disabled = false }: PromptInputPro
     }
   }
 
+  const handleChange = (value: string) => {
+    if (value.length <= MAX_LENGTH) {
+      setInput(value)
+    }
+  }
+
   const canSend = input.trim().length > 0 && !disabled
+  const charCount = input.length
+  const showCharCount = charCount > MAX_LENGTH * 0.8
 
   return (
     <div className="border-t border-dark-700 bg-dark-900 px-4 py-3">
@@ -53,11 +70,12 @@ export default function PromptInput({ onSend, disabled = false }: PromptInputPro
           <textarea
             ref={textareaRef}
             value={input}
-            onChange={e => setInput(e.target.value)}
+            onChange={e => handleChange(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Ask about travel policies, visa requirements, flights..."
             disabled={disabled}
             rows={1}
+            maxLength={MAX_LENGTH}
             className="flex-1 bg-transparent text-dark-100 placeholder-dark-500 text-sm resize-none outline-none py-1.5 max-h-[150px] disabled:opacity-50"
           />
 
@@ -86,9 +104,16 @@ export default function PromptInput({ onSend, disabled = false }: PromptInputPro
           </button>
         </div>
 
-        <p className="text-[11px] text-dark-600 text-center mt-2">
-          Press Enter to send · Shift+Enter for new line
-        </p>
+        <div className="flex justify-between items-center mt-2">
+          <p className="text-[11px] text-dark-600">
+            Press Enter to send · Shift+Enter for new line
+          </p>
+          {showCharCount && (
+            <span className={`text-[11px] ${charCount >= MAX_LENGTH ? 'text-red-400' : 'text-dark-500'}`}>
+              {charCount}/{MAX_LENGTH}
+            </span>
+          )}
+        </div>
       </div>
     </div>
   )

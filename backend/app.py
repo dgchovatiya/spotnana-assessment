@@ -10,6 +10,9 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
+MAX_MESSAGES = 50
+MAX_CONTENT_LENGTH = 2000
+
 
 @app.route('/api/health', methods=['GET'])
 def health_check():
@@ -31,6 +34,18 @@ def chat():
     if not messages or len(messages) == 0:
         return jsonify({'error': 'At least one message is required.'}), 400
 
+    if len(messages) > MAX_MESSAGES:
+        return jsonify({'error': 'Conversation is too long. Please start a new chat.'}), 400
+
+    # Validate message format
+    for msg in messages:
+        if not isinstance(msg, dict) or 'role' not in msg or 'content' not in msg:
+            return jsonify({'error': 'Invalid message format.'}), 400
+        if msg['role'] not in ('user', 'assistant'):
+            return jsonify({'error': 'Invalid message role.'}), 400
+        if len(msg['content']) > MAX_CONTENT_LENGTH:
+            return jsonify({'error': 'Message is too long.'}), 400
+
     try:
         response = get_chat_response(messages)
         return jsonify({'response': response})
@@ -45,4 +60,5 @@ def chat():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5001)
+    is_debug = os.getenv('FLASK_ENV') == 'development'
+    app.run(debug=is_debug, port=5001)

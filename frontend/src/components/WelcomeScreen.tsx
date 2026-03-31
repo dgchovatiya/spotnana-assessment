@@ -25,9 +25,9 @@ export default function WelcomeScreen({ onSelectQuestion }: WelcomeScreenProps) 
 
         {/* Suggested questions grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {suggestedQuestions.map((q, index) => (
+          {suggestedQuestions.map((q) => (
             <button
-              key={index}
+              key={q.text}
               onClick={() => onSelectQuestion(q.text)}
               className="group text-left p-4 bg-dark-800/50 hover:bg-dark-800 border border-dark-700 hover:border-primary-600/50 rounded-xl transition-all duration-200"
             >
