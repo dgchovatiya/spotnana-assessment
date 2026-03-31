@@ -40,12 +40,15 @@ One button to wipe the conversation and start fresh.
 
 ### Backend
 - **Framework:** Flask (Python)
-- **AI:** OpenAI API (GPT-4)
+- **AI Integration:** OpenAI API (GPT-4)
 - **CORS:** Flask-CORS
+- **Environment:** python-dotenv
 
 ### Frontend
-- **Framework:** React + Vite + TypeScript
-- **Styling:** Tailwind CSS
+- **Framework:** React 18 + Vite + TypeScript
+- **Styling:** Tailwind CSS (custom red theme)
+- **HTTP Client:** Axios
+- **Markdown:** react-markdown for AI response rendering
 - **State:** React hooks + localStorage for chat history
 
 ## Project Structure
@@ -53,18 +56,52 @@ One button to wipe the conversation and start fresh.
 ```
 spotnana-assessment/
 ├── backend/
-│   ├── app.py              # Flask app entry point
-│   ├── requirements.txt    # Python dependencies
-│   └── .env.example        # Backend env template
+│   ├── app.py                  # Flask app entry point + API routes
+│   ├── services/
+│   │   └── openai_service.py   # OpenAI client wrapper
+│   ├── requirements.txt        # Python dependencies
+│   ├── .env.example            # Backend env template
+│   └── .gitignore
 ├── frontend/
 │   ├── src/
+│   │   ├── components/
+│   │   │   ├── Layout.tsx          # Main responsive grid layout
+│   │   │   ├── Header.tsx          # App header with nav actions
+│   │   │   ├── Sidebar.tsx         # Chat history sidebar (collapsible)
+│   │   │   ├── ChatArea.tsx        # Main chat container
+│   │   │   ├── ChatMessages.tsx    # Scrollable message list
+│   │   │   ├── MessageBubble.tsx   # Individual message bubble
+│   │   │   ├── PromptInput.tsx     # Text input + send button
+│   │   │   ├── WelcomeScreen.tsx   # Landing state with suggested prompts
+│   │   │   ├── TypingIndicator.tsx # Animated loading dots
+│   │   │   ├── ConfirmDialog.tsx   # Reusable confirmation modal
+│   │   │   └── ErrorMessage.tsx    # Inline error with retry
+│   │   ├── hooks/
+│   │   │   ├── useChat.ts         # Chat message state management
+│   │   │   └── useChatHistory.ts  # Multi-conversation management
+│   │   ├── services/
+│   │   │   ├── api.ts             # Axios instance + API calls
+│   │   │   └── storage.ts         # localStorage CRUD operations
+│   │   ├── types/
+│   │   │   └── index.ts           # TypeScript interfaces
+│   │   ├── data/
+│   │   │   └── suggestedQuestions.ts  # Pre-built travel prompts
+│   │   ├── App.tsx
+│   │   ├── main.tsx
+│   │   └── index.css
 │   ├── package.json
 │   ├── vite.config.ts
-│   └── tailwind.config.ts
+│   ├── tailwind.config.ts
+│   └── tsconfig.json
 └── README.md
 ```
 
 ## Getting Started
+
+### Prerequisites
+- Node.js 18+
+- Python 3.10+
+- OpenAI API key
 
 ### Backend
 
@@ -108,6 +145,13 @@ The frontend runs on `http://localhost:5173` and proxies API requests to `http:/
 |----------|-------------|
 | `OPENAI_API_KEY` | Your OpenAI API key |
 | `FLASK_ENV` | `development` or `production` |
+
+## Design
+
+- **Theme:** Red color palette with dark gray backgrounds
+- **Responsive:** Mobile-first — sidebar collapses to hamburger menu on small screens
+- **Accessible:** Keyboard navigation, proper focus management, screen reader friendly
+- **Error Handling:** Every failure scenario shows a clear message with retry option
 
 ## License
 
