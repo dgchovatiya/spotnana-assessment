@@ -7,6 +7,7 @@ interface PromptInputProps {
 
 export default function PromptInput({ onSend, disabled = false }: PromptInputProps) {
   const [input, setInput] = useState('')
+  const [shake, setShake] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => {
@@ -25,7 +26,13 @@ export default function PromptInput({ onSend, disabled = false }: PromptInputPro
 
   const handleSend = () => {
     const trimmed = input.trim()
-    if (!trimmed || disabled) return
+    if (disabled) return
+    if (!trimmed) {
+      setShake(true)
+      setTimeout(() => setShake(false), 500)
+      textareaRef.current?.focus()
+      return
+    }
     onSend(trimmed)
     setInput('')
   }
@@ -42,7 +49,7 @@ export default function PromptInput({ onSend, disabled = false }: PromptInputPro
   return (
     <div className="border-t border-dark-700 bg-dark-900 px-4 py-3">
       <div className="max-w-3xl mx-auto">
-        <div className="flex items-end gap-3 bg-dark-800 border border-dark-600 rounded-2xl px-4 py-2 focus-within:border-primary-500 transition-colors">
+        <div className={`flex items-end gap-3 bg-dark-800 border border-dark-600 rounded-2xl px-4 py-2 focus-within:border-primary-500 transition-colors ${shake ? 'animate-[shake_0.4s_ease-in-out] border-red-500/50' : ''}`}>
           <textarea
             ref={textareaRef}
             value={input}

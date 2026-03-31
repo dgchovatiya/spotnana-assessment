@@ -1,3 +1,4 @@
+import Markdown from 'react-markdown'
 import { Message } from '../types'
 
 interface MessageBubbleProps {
@@ -36,7 +37,13 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
             : 'bg-dark-800 text-dark-100 rounded-bl-md border border-dark-700'
         }`}
       >
-        <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
+        {isUser ? (
+          <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
+        ) : (
+          <div className="prose-ai text-sm leading-relaxed">
+            <Markdown>{message.content}</Markdown>
+          </div>
+        )}
         <span
           className={`text-[10px] mt-1 block ${
             isUser ? 'text-primary-200' : 'text-dark-500'
