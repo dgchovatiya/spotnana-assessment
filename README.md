@@ -2,6 +2,14 @@
 
 An AI-powered travel assistant that acts as a smart first point of contact for corporate travel questions. Travelers get instant answers without emailing a travel manager or digging through policy docs.
 
+[Working Demo Video](https://drive.google.com/file/d/1wlX8JQ--11pkjH4moJJSEKTJa4aI-Mdc/view?usp=sharing)
+
+## Screenshots
+
+![Welcome Screen with Suggested Questions](screenshots-1.png)
+
+![Chat Interface with AI Response](screenshots-2.png)
+
 ## Problem
 
 Corporate travelers waste hours every week on things that should take seconds — figuring out travel policies, comparing flight options, understanding visa requirements, handling disruptions, and estimating trip costs. There's no intelligent, conversational layer between the traveler and the information they need.
