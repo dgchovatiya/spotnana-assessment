@@ -24,7 +24,7 @@ export default function ChatArea() {
           </div>
         </div>
       ) : (
-        <ChatMessages messages={messages} />
+        <ChatMessages messages={messages} isLoading={isLoading} />
       )}
 
       {error && (
