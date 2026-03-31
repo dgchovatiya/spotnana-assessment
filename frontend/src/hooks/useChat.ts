@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import { Message } from '../types'
 import { sendMessage } from '../services/api'
 
@@ -6,6 +6,7 @@ export function useChat() {
   const [messages, setMessages] = useState<Message[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const messagesRef = useRef<Message[]>([])
 
   const send = useCallback(async (content: string) => {
     const userMessage: Message = {
@@ -15,17 +16,19 @@ export function useChat() {
       timestamp: Date.now(),
     }
 
-    setMessages(prev => [...prev, userMessage])
+    const updatedMessages = [...messagesRef.current, userMessage]
+    messagesRef.current = updatedMessages
+    setMessages(updatedMessages)
     setIsLoading(true)
     setError(null)
 
     try {
-      const allMessages = [...messages, userMessage].map(m => ({
+      const apiMessages = updatedMessages.map(m => ({
         role: m.role,
         content: m.content,
       }))
 
-      const response = await sendMessage(allMessages)
+      const response = await sendMessage(apiMessages)
 
       const assistantMessage: Message = {
         id: crypto.randomUUID(),
@@ -34,16 +37,24 @@ export function useChat() {
         timestamp: Date.now(),
       }
 
-      setMessages(prev => [...prev, assistantMessage])
+      const withResponse = [...updatedMessages, assistantMessage]
+      messagesRef.current = withResponse
+      setMessages(withResponse)
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Something went wrong. Please try again.'
       setError(errorMessage)
     } finally {
       setIsLoading(false)
     }
-  }, [messages])
+  }, [])
+
+  const clearMessages = useCallback(() => {
+    messagesRef.current = []
+    setMessages([])
+    setError(null)
+  }, [])
 
   const clearError = useCallback(() => setError(null), [])
 
-  return { messages, isLoading, error, send, clearError }
+  return { messages, isLoading, error, send, clearError, clearMessages }
 }
